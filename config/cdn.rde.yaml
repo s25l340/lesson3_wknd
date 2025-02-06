@@ -1,0 +1,39 @@
+kind: "CDN"
+version: "1"
+metadata:
+  envTypes: ["rde"]
+data:
+  redirects:
+    rules:
+    - name: "redirect-explore-page"
+      when: { reqProperty: path, equals: "/us/en/explore.html" }
+      action:
+        type: redirect
+        status: 301
+        location: /us/en/adventures.html
+  requestTransformations:
+    rules:
+      - name: route-to-api
+        when:
+          allOf:
+          - reqProperty: tier
+            equals: publish
+          - reqProperty: path
+            matches: '^\/api.*'
+        actions:
+        - type: set
+          reqHeader: x-api-key
+          value: ${{ API_TOKEN }}
+        - type: set
+          var: routeToApi
+          value: '1'
+  originSelectors:
+    origins:
+    - name: api-origin
+      domain: s25l340.edgecompute.app
+    rules:
+    - name: select-api-origin
+      when: { var: routeToApi, equals: '1' }
+      action:
+        type: selectOrigin
+        originName: api-origin

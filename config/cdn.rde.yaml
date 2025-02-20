@@ -6,7 +6,7 @@ data:
   redirects:
     rules:
     - name: "redirect-explore-page"
-      when: { reqProperty: path, equals: "/us/en/explore.html" }
+      wheen: { reqProperty: path, equals: "/us/en/explore.html" }
       action:
         type: redirect
         status: 301
